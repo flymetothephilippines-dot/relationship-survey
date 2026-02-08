@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relationship Risk Assessment v2.0 - Fly Me To The Philippines</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-pink: #ff1493;
+            --brand-orange: #ff8c00;
+            --brand-blue: #0047ab;
+            --brand-red: #dc143c;
+            --success-green: #28a745;
+            --white: #ffffff;
+            --text: #2c3e50;
+            --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: var(--text);
+            padding-bottom: 60px;
+        }
+
+       .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        /* Disclaimer Overlay */
+        #disclaimer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #disclaimer-box {
+            background: white;
+            max-width: 600px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        #disclaimer-box h2 {
+            font-family: 'Crimson Pro', serif;
+            color: var(--brand-red);
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        #disclaimer-box p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        #disclaimer-box .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            margin: 25px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        #disclaimer-box input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            margin-top: 2px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        #disclaimer-box label {
+            cursor: pointer;
+            font-weight: 600;
+            color: #333;
+        }
+
+        #accept-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: white;
+            background: var(--brand-blue);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #accept-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        #accept-btn:not(:disabled):hover {
+            background: #003080;
+        }
+
+        /* Service Info Modal */
+        #service-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        #service-content {
+            background: white;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        #close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 2em;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            line-height: 1;
+            padding: 5px 10px;
+        }
+
+        #close-modal:hover {
+            color: var(--brand-red);
+        }
+
+        #service-content h3 {
+            font-family: 'Crimson Pro', serif;
+            color: var(--brand-blue);
+            margin: 30px 0 15px 0;
+            font-size: 1.5em;
+        }
+
+        #service-content h4 {
+            color: var(--brand-pink);
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        #service-content p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        #service-content ul {
+            margin: 15px 0 15px 30px;
+            line-height: 1.8;
+        }
+
+        #service-content a {
+            color: var(--brand-blue);
+            font-weight: 600;
+        }
+
+        #service-content .divider {
+            border-top: 2px solid #e9ecef;
+            margin: 30px 0;
+        }
+
+        /* Branding Section */
+       .brand-banner {
+            background: linear-gradient(90deg, var(--brand-pink) 0%, var(--brand-orange) 100%);
+            padding: 20px;
+            text-align: center;
+            color: white;
+        }
+
+       .brand-banner h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+       .brand-banner a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9em;
+            transition: opacity 0.2s;
+        }
+
+       .brand-banner a:hover { opacity: 1; text-decoration: underline; }
+
+        /* Header Section */
+       .header {
+            background: var(--brand-blue);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+       .header::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: var(--white);
+            border-radius: 50% 50% 0 0;
+        }
+
+       .header h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+       .header p { opacity: 0.9; font-size: 1.1em; }
+
+        /* Content Area */
+       .content { padding: 40px 30px; }
+
+       .intro-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin-bottom: 40px;
+            border-radius: 4px;
+        }
+
+       .intro-box h3 { color: #856404; margin-bottom: 10px; }
+       .intro-box p { color: #856404; font-size: 0.95em; line-height: 1.5; }
+
+        /* Sticky Progress Bar */
+       .progress-sticky {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            padding: 15px 30px;
+            border-bottom: 1px solid #eee;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin: 0 -30px 30px -30px;
+        }
+
+       .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+       .progress-track {
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+       .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-pink), var(--brand-orange));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* Questions */
+       .question-card {
+            background: #fff;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+       .question-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-color: #ddd;
+        }
+
+       .question-card.error {
+            border: 2px solid var(--brand-red);
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+       .q-text {
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+
+       .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+       .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+       .option-label:hover {
+            background-color: #f8f9fa;
+            border-color: #ced4da;
+        }
+
+       .option-label.selected {
+            background-color: #fff0f6;
+            border-color: var(--brand-pink);
+        }
+
+       .option-label input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #adb5bd;
+            border-radius: 50%;
+            margin-right: 15px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+       .option-label input:checked {
+            border-color: var(--brand-pink);
+            background: var(--brand-pink);
+            box-shadow: inset 0 0 0 4px #fff0f6;
+        }
+
+       .option-text { flex-grow: 1; font-size: 0.95em; }
+
+        /* Results Section */
+       .calculate-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(45deg, var(--brand-blue), var(--brand-red));
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 71, 171, 0.3);
+            transition: transform 0.2s;
+            margin-top: 40px;
+        }
+
+       .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 71, 171, 0.4);
+        }
+
+        #results-area {
+            display: none;
+            margin-top: 50px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+       .score-card {
+            text-align: center;
+            padding: 40px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+       .score-card.safe { background: linear-gradient(135deg, #11998e, #38ef7d); }
+       .score-card.caution { background: linear-gradient(135deg, #f2994a, #f2c94c); color: #333; }
+       .score-card.danger { background: linear-gradient(135deg, #cb2d3e, #ef473a); }
+       .score-card.critical { background: linear-gradient(135deg, #8E0E00, #1F1C18); }
+
+       .score-number { font-size: 4em; font-weight: 800; line-height: 1; margin: 10px 0; }
+       .score-label { font-size: 1.5em; font-weight: 600; font-family: 'Crimson Pro', serif; text-transform: uppercase; letter-spacing: 1px;}
+
+       .action-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid #e9ecef;
+        }
+
+       .action-box h3 { margin-bottom: 20px; color: var(--brand-blue); }
+
+       .copy-field {
+            background: #fff;
+            border: 2px dashed #ced4da;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin-bottom: 10px;
+            word-break: break-all;
+            white-space: pre-wrap;
+            font-size: 0.9em;
+        }
+
+       .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+       .action-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: background 0.2s;
+            font-size: 0.9em;
+        }
+
+       .btn-copy { background: #6c757d; color: white; }
+       .btn-copy:hover { background: #5a6268; }
+
+       .btn-consult { background: var(--brand-pink); color: white; }
+       .btn-consult:hover { background: #d61c7e; }
+        
+       .btn-whatsapp { background: #25D366; color: white; }
+       .btn-whatsapp:hover { background: #128C7E; }
+
+       .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #6c757d;
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+       .footer a { color: var(--brand-blue); text-decoration: none; }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+           .container { margin: 0; border-radius: 0; }
+           .header h2 { font-size: 1.8em; }
+           .score-number { font-size: 3em; }
+           .btn-group { flex-direction: column; }
+           #disclaimer-box { padding: 25px; }
+           #service-content { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Disclaimer Overlay -->
+<div id="disclaimer-overlay">
+    <div id="disclaimer-box">
+        <h2>⚖️ Important Legal Disclaimer</h2>
+        <p>We are <strong>not attorneys</strong> and we are <strong>not law enforcement</strong>. This assessment tool is provided for informational and educational purposes only and does not constitute legal advice, professional counsel, or investigative services.</p>
+        <p>If you have serious concerns about fraud, criminal activity, or personal safety, please contact the appropriate local, state, or federal authorities, or consult with a licensed attorney in your jurisdiction.</p>
+        <p>By using this tool, you acknowledge that:</p>
+        <ul style="margin: 15px 0 15px 20px; line-height: 1.6;">
+            <li>You use this assessment at your own risk</li>
+            <li>We assume no liability for decisions made based on the results</li>
+            <li>Results are based on self-reported information and algorithmic scoring</li>
+            <li>This tool does not replace professional due diligence or investigation</li>
+        </ul>
+        <div class="checkbox-container">
+            <input type="checkbox" id="accept-checkbox">
+            <label for="accept-checkbox">I understand and accept the terms above. I acknowledge this is not legal or law enforcement advice.</label>
+        </div>
+        <button id="accept-btn" disabled>Continue to Assessment</button>
+    </div>
+</div>
+
+<!-- Service Info Modal -->
+<div id="service-modal">
+    <div id="service-content">
+        <button id="close-modal">&times;</button>
+        <h3>⭐ Chrissy's Professional Open Source Social Media Investigation Service</h3>
+        
+        <h4>A Personal Message From Chrissy</h4>
+        <p>Thank you for reaching out. I know how stressful it can feel when you care about someone and you're not 100% sure if she's being honest with you. That uncertainty — the doubt, the emotional investment, the worry — is exactly why I created this service.</p>
+        
+        <p>As a Filipina woman who understands both Western and Filipino culture deeply, my job is simple:</p>
+        
+        <p><strong>👉 Give you clarity, truth, and peace of mind before you invest your heart or finances any further.</strong></p>
+        
+        <p>This service is completely legal, ethical, and confidential. I only use publicly available information, and every investigation is covered by a privacy agreement so you are fully protected.</p>
+        
+        <p>You deserve to know the truth — without judgment, without shame, and without guessing.</p>
+        
+        <div class="divider"></div>
+        
+        <h3>🔍 Worried You Don't Have Enough Information? Please Don't Be.</h3>
+        
+        <p>Most men believe they need a full name, an ID, or a Facebook link before an investigation can work.</p>
+        
+        <p><strong>Not true.</strong></p>
+        
+        <p>In fact, Chrissy has successfully completed hundreds of investigations using only:</p>
+        <ul>
+            <li>A first name</li>
+            <li>A nickname</li>
+            <li>A single photo</li>
+            <li>A hometown</li>
+            <li>A Messenger screenshot</li>
+            <li>A workplace guess</li>
+            <li>A friend's name</li>
+            <li>A province</li>
+        </ul>
+        
+        <p>Even when a woman has:</p>
+        <ul>
+            <li>A private Facebook</li>
+            <li>No ID</li>
+            <li>Multiple accounts</li>
+            <li>Tight privacy settings</li>
+            <li>Hidden or altered information</li>
+        </ul>
+        
+        <p>Chrissy can still work with:</p>
+        <ul>
+            <li>✨ Facial recognition tools</li>
+            <li>✨ Reverse-image searches</li>
+            <li>✨ Relationship-network mapping</li>
+            <li>✨ Geo-tag and region-based clues</li>
+            <li>✨ Digital footprint matching</li>
+            <li>✨ Behavioral pattern analysis</li>
+        </ul>
+        
+        <p><strong>You do NOT need perfect information. Just send whatever you have — Chrissy will guide you from there.</strong></p>
+        
+        <div class="divider"></div>
+        
+        <h3>🗣️ Two Ways to Begin</h3>
+        
+        <p>You can either (1) talk to us first, or (2) book your investigation immediately.</p>
+        
+        <p>Both options work.</p>
+        
+        <div class="divider"></div>
+        
+        <h4>OPTION 1 — Have Questions First? Talk With Us Briefly (Free)</h4>
+        
+        <p>Many men prefer to speak with us before booking. If that's you, we make it easy:</p>
+        
+        <p><strong>📱 WhatsApp (Official Line for Investigations)</strong></p>
+        <p>Message: <a href="https://wa.me/16024302330" target="_blank">+1-602-430-2330</a><br>
+        (Chrissy responds on this number — this is our official investigation contact.)</p>
+        
+        <p>Just send: <em>"Hi, I have a question about starting my investigation."</em></p>
+        
+        <p>Tell us what you know and what you don't know, and we'll tell you:</p>
+        <ul>
+            <li>Whether the investigation is possible</li>
+            <li>What Chrissy can do with the information you have</li>
+            <li>What additional details (if any) will help</li>
+        </ul>
+        
+        <p>No pressure. No judgment. Total privacy.</p>
+        
+        <p><strong>Or Book a Free 10-Minute Meet & Greet</strong></p>
+        <p>🔗 <a href="https://flymetothephilippinesconsultation.as.me/" target="_blank">https://flymetothephilippinesconsultation.as.me/</a></p>
+        
+        <div class="divider"></div>
+        
+        <h4>OPTION 2 — Ready to Move Forward Now?</h4>
+        
+        <p>If you already know you want a full investigation, follow these steps:</p>
+        
+        <div class="divider"></div>
+        
+        <p><strong>📋 Step 1: Book Your One-Hour Debrief Session</strong></p>
+        
+        <p>Choose a date at least 72 hours from now so Chrissy has enough time to work deeply.</p>
+        
+        <p>🔗 <a href="https://flymetothephilippinesconsultation.as.me/" target="_blank">https://flymetothephilippinesconsultation.as.me/</a></p>
+        
+        <div class="divider"></div>
+        
+        <p><strong>💵 Step 2: Complete Payment — $200 USD Flat Fee</strong></p>
+        
+        <p><strong>Payment Methods:</strong></p>
+        <ul>
+            <li>PayPal (accepts all credit cards — no PayPal account needed)</li>
+            <li>Zelle (USA) – Robert Weinstein<br>📱 602-430-2330 | ✉️ weinbob@gmail.com</li>
+            <li>Wise / Remitly → GCash (International)<br>Chrisalie A. Pepito — 0963-953-3957</li>
+            <li>Western Union (International)<br>Recipient: Chrisalie Pepito — Cagayan de Oro</li>
+        </ul>
+        
+        <p>No surprises. No extra fees. Just one flat rate.</p>
+        
+        <div class="divider"></div>
+        
+        <p><strong>🕵️‍♀️ Step 3: Chrissy Performs a Deep Investigation (4–6 Hours Minimum)</strong></p>
+        
+        <p>This is NOT automated. Not AI-generated. Not surface-level searching.</p>
+        
+        <p>Chrissy personally investigates:</p>
+        <ul>
+            <li>Real identity</li>
+            <li>Real relationship status</li>
+            <li>Other social media accounts</li>
+            <li>Family connections</li>
+            <li>Engagement history</li>
+            <li>Lifestyle patterns</li>
+            <li>Hidden relationships or red flags</li>
+            <li>Inconsistencies or contradictions</li>
+            <li>Risk indicators</li>
+        </ul>
+        
+        <p>If the account is completely locked down and a full investigation isn't possible, you'll receive a rebate or credit for unused time.</p>
+        
+        <p><strong>👉 You only pay for real investigative work performed.</strong></p>
+        
+        <div class="divider"></div>
+        
+        <p><strong>📷 Step 4: Send Background Information</strong></p>
+        
+        <p>Once booked and paid, we'll ask you for anything you have — even if it's minimal:</p>
+        <ul>
+            <li>Names</li>
+            <li>Photos</li>
+            <li>Screenshots</li>
+            <li>Messenger texts</li>
+            <li>Hometown</li>
+            <li>Workplace</li>
+            <li>Friends or siblings</li>
+            <li>Anything else</li>
+        </ul>
+        
+        <p>Whatever you can provide helps. There is no judgment and no pressure.</p>
+        
+        <div class="divider"></div>
+        
+        <p><strong>👥 Step 5: Your Private Debrief Session</strong></p>
+        
+        <p><strong>First 30 Minutes — Chrissy's Findings</strong></p>
+        
+        <p>She walks you through:</p>
+        <ul>
+            <li>What's real</li>
+            <li>What's concerning</li>
+            <li>What's missing</li>
+            <li>What you should watch for</li>
+            <li>What you should absolutely avoid</li>
+        </ul>
+        
+        <p><strong>Optional Final 30 Minutes — With Rob</strong></p>
+        
+        <p>If you want cultural insight or relationship guidance, Rob joins the call to discuss:</p>
+        <ul>
+            <li>Red flags</li>
+            <li>Strategy</li>
+            <li>How to communicate</li>
+            <li>How to move forward</li>
+        </ul>
+        
+        <p>This is YOUR hour. We are here to protect you with truth, clarity, and cultural context.</p>
+        
+        <div class="divider"></div>
+        
+        <p><strong>🔒 Confidentiality & Legal Protection</strong></p>
+        
+        <p>Before we begin, you'll sign a short privacy acknowledgment confirming:</p>
+        <ul>
+            <li>Findings are confidential</li>
+            <li>Only publicly available information is used</li>
+            <li>Information won't be used to harass or harm anyone</li>
+            <li>This is not legal or financial advice</li>
+            <li>You're responsible for decisions made after the investigation</li>
+        </ul>
+        
+        <p>Your privacy is our top priority.</p>
+        
+        <div class="divider"></div>
+        
+        <p><strong>🎯 Additional Support Services</strong></p>
+        
+        <p>If you want further guidance beyond the investigation:</p>
+        
+        <p><strong>One-Hour Consultation With Rob — $50</strong></p>
+        <p>Direct, honest insight on dating, culture, red flags, and next steps.</p>
+        
+        <p><strong>Platinum Big Brother Program — $200</strong></p>
+        <p>Includes 4.5 hours of consulting, messages, and email support for six months.</p>
+        
+        <p>Book at the same link:<br>
+        🔗 <a href="https://flymetothephilippinesconsultation.as.me/" target="_blank">https://flymetothephilippinesconsultation.as.me/</a></p>
+        
+        <div class="divider"></div>
+        
+        <p><strong>💬 Questions? Need Help Right Now?</strong></p>
+        
+        <p>📱 Message us on WhatsApp:<br>
+        <a href="https://wa.me/16024302330" target="_blank">+1-602-430-2330</a></p>
+        
+        <p>This is the official contact number for Chrissy's Investigation Service. Chrissy will respond personally.</p>
+        
+        <p>We're here to guide you — safely, respectfully, and privately.</p>
+        
+        <div class="divider"></div>
+        
+        <p style="margin-top: 30px;"><em>I look forward to helping you gain the clarity, confidence, and peace of mind you deserve.</em></p>
+        
+        <p><strong>With care,<br>
+        Chrissy Weinstein<br>
+        Lead Investigator<br>
+        Fly Me to the Philippines</strong></p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="brand-banner">
+        <h1>🇵🇭 Fly Me To The Philippines</h1>
+        <a href="https://flymetothephilippines.com" target="_blank">flymetothephilippines.com</a>
+    </div>
+
+    <div class="header">
+        <h2>Relationship Risk Assessment</h2>
+        <p>The "Zero Trust" Verification Engine • v2.0</p>
+    </div>
+
+    <div class="content">
+        <div class="intro-box">
+            <h3>📋 Assessment Protocol</h3>
+            <p>This tool uses a <strong>weighted algorithmic scoring system</strong> (-100 to +100) based on forensic analysis of over 500 successful and fraudulent relationships. It evaluates verification, financial, and behavioral patterns. <br><br><strong>Instructions:</strong> Answer all 41 questions honestly. Your data is processed locally in your browser and is not stored on our servers.</p>
+        </div>
+
+        <div class="progress-sticky">
+            <div class="progress-meta">
+                <span id="progress-text">0 of 41 Answered</span>
+                <span id="risk-preview">Calculating Risk...</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <form id="assessment-form">
+            <div class="question-card" id="q1">
+                <div class="q-text">1. How was the initial contact made?</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q1" value="-5" data-text="She messaged me first (unsolicited DM/Friend Request)"> <span class="option-text">She messaged me first (unsolicited DM/Friend Request)</span></label>
+                    <label class="option-label"><input type="radio" name="q1" value="2" data-text="I messaged her first / We matched mutually on a reputable site"> <span class="option-text">I messaged her first / We matched mutually on a reputable site</span></label>
+                    <label class="option-label"><input type="radio" name="q1" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q2">
+                <div class="q-text">2. What is the video chat frequency?</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q2" value="-15" data-text="Never video chatted (various excuses)"> <span class="option-text">Never video chatted (various excuses)</span></label>
+                    <label class="option-label"><input type="radio" name="q2" value="2" data-text="Rarely (once a week or less)"> <span class="option-text">Rarely (once a week or less)</span></label>
+                    <label class="option-label"><input type="radio" name="q2" value="5" data-text="Daily or almost daily"> <span class="option-text">Daily or almost daily</span></label>
+                    <label class="option-label"><input type="radio" name="q2" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q3">
+                <div class="q-text">3. Video Chat Environment Check: What do you see?</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q3" value="-3" data-text="Generic office, blank wall, or always dark/blurred"> <span class="option-text">Generic office, blank wall, or always dark/blurred</span></label>
+                    <label class="option-label"><input type="radio" name="q3" value="3" data-text="Authentic home setting (family, noise, imperfect background)"> <span class="option-text">Authentic home setting (family, noise, imperfect background)</span></label>
+                    <label class="option-label"><input type="radio" name="q3" value="-10" data-text="N/A (No video chat yet)"> <span class="option-text">N/A (No video chat yet)</span></label>
+                    <label class="option-label"><input type="radio" name="q3" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q4">
+                <div class="q-text">4. Identity Verification: Has she shared Government ID?</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q4" value="-5" data-text="No, refused or evaded request"> <span class="option-text">No, refused or evaded request</span></label>
+                    <label class="option-label"><input type="radio" name="q4" value="5" data-text="Yes, sent clear photo of ID (Passport/UMID/PhilSys)"> <span class="option-text">Yes, sent clear photo of ID (Passport/UMID/PhilSys)</span></label>
+                    <label class="option-label"><input type="radio" name="q4" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q5">
+                <div class="q-text">5. Location Verification (The Blue Dot Test)</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q5" value="-5" data-text="Never verified real-time location"> <span class="option-text">Never verified real-time location</span></label>
+                    <label class="option-label"><input type="radio" name="q5" value="5" data-text="Verified via Live Location (Messenger/Google Maps)"> <span class="option-text">Verified via Live Location (Messenger/Google Maps)</span></label>
+                    <label class="option-label"><input type="radio" name="q5" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q6">
+                <div class="q-text">6. Has she given a video tour of her home?</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q6" value="-2" data-text="No"> <span class="option-text">No</span></label>
+                    <label class="option-label"><input type="radio" name="q6" value="3" data-text="Yes, full walkthrough"> <span class="option-text">Yes, full walkthrough</span></label>
+                    <label class="option-label"><input type="radio" name="q6" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q7">
+                <div class="q-text">7. Profile Authenticity Check</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q7" value="-5" data-text='"Too Perfect" (Model photos, no kids, claims wealthy/business owner)'> <span class="option-text">"Too Perfect" (Model photos, no kids, claims wealthy/business owner)</span></label>
+                    <label class="option-label"><input type="radio" name="q7" value="5" data-text="Realistic (Average quality photos, mentions family/kids/job)"> <span class="option-text">Realistic (Average quality photos, mentions family/kids/job)</span></label>
+                    <label class="option-label"><input type="radio" name="q7" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q8">
+                <div class="q-text">8. Transportation Mode</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q8" value="-5" data-text="Owns a car (Uncommon for average single Filipina)"> <span class="option-text">Owns a car (Uncommon for average single Filipina)</span></label>
+                    <label class="option-label"><input type="radio" name="q8" value="3" data-text="Public transport / Jeepney / Trike"> <span class="option-text">Public transport / Jeepney / Trike</span></label>
+                    <label class="option-label"><input type="radio" name="q8" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q9">
+                <div class="q-text">9. Living Situation</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q9" value="-5" data-text="Living alone in modern furnished condo (High risk of syndicate housing)"> <span class="option-text">Living alone in modern furnished condo (High risk of syndicate housing)</span></label>
+                    <label class="option-label"><input type="radio" name="q9" value="3" data-text="With family or in modest boarding house"> <span class="option-text">With family or in modest boarding house</span></label>
+                    <label class="option-label"><input type="radio" name="q9" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q10">
+                <div class="q-text">10. Stance on Family Meeting</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q10" value="-10" data-text='"You don\'t need to meet my family" / Keeps them hidden'> <span class="option-text">"You don't need to meet my family" / Keeps them hidden</span></label>
+                    <label class="option-label"><input type="radio" name="q10" value="5" data-text="Eager for you to meet family (Video or in person)"> <span class="option-text">Eager for you to meet family (Video or in person)</span></label>
+                    <label class="option-label"><input type="radio" name="q10" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q11">
+                <div class="q-text">11. Platform Origin</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q11" value="-5" data-text="Facebook / Instagram / Tinder (Free/High Scam Volume)"> <span class="option-text">Facebook / Instagram / Tinder (Free/High Scam Volume)</span></label>
+                    <label class="option-label"><input type="radio" name="q11" value="2" data-text="Paid Niche Site (Christian Filipina, PinaLove, etc.)"> <span class="option-text">Paid Niche Site (Christian Filipina, PinaLove, etc.)</span></label>
+                    <label class="option-label"><input type="radio" name="q11" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q12">
+                <div class="q-text">12. Family Introduction on Video</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q12" value="-5" data-text="Never happened (despite living with them)"> <span class="option-text">Never happened (despite living with them)</span></label>
+                    <label class="option-label"><input type="radio" name="q12" value="5" data-text="Yes, introduced to parents/siblings on camera"> <span class="option-text">Yes, introduced to parents/siblings on camera</span></label>
+                    <label class="option-label"><input type="radio" name="q12" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q13">
+                <div class="q-text">13. Internet Access Consistency</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q13" value="-2" data-text="Perfect high-speed WiFi always (Suspicious if unemployed)"> <span class="option-text">Perfect high-speed WiFi always (Suspicious if unemployed)</span></label>
+                    <label class="option-label"><input type="radio" name="q13" value="2" data-text="Data / Prepaid / Public WiFi (Realistic)"> <span class="option-text">Data / Prepaid / Public WiFi (Realistic)</span></label>
+                    <label class="option-label"><input type="radio" name="q13" value="0" data-text="Home WiFi (Middle class/Employed)"> <span class="option-text">Home WiFi (Middle class/Employed)</span></label>
+                    <label class="option-label"><input type="radio" name="q13" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q14">
+                <div class="q-text">14. The "Ask": Requests for Money</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q14" value="-30" data-text="Asked or hinted within first 10 days"> <span class="option-text">Asked or hinted within first 10 days</span></label>
+                    <label class="option-label"><input type="radio" name="q14" value="-15" data-text="Asked after 2+ weeks (Pre-meeting)"> <span class="option-text">Asked after 2+ weeks (Pre-meeting)</span></label>
+                    <label class="option-label"><input type="radio" name="q14" value="10" data-text="Never asked, hinted, or complained about bills"> <span class="option-text">Never asked, hinted, or complained about bills</span></label>
+                    <label class="option-label"><input type="radio" name="q14" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q15">
+                <div class="q-text">15. Did you send money?</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q15" value="-50" data-text="Yes, I sent money (Western Union/Remitly/GCash)"> <span class="option-text">Yes, I sent money (Western Union/Remitly/GCash)</span></label>
+                    <label class="option-label"><input type="radio" name="q15" value="0" data-text="No"> <span class="option-text">No</span></label>
+                    <label class="option-label"><input type="radio" name="q15" value="15" data-text="I offered, but she REFUSED"> <span class="option-text">I offered, but she REFUSED</span></label>
+                    <label class="option-label"><input type="radio" name="q15" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q16">
+                <div class="q-text">16. Education vs. Communication Skill</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q16" value="-5" data-text="Claims degree but English/Grammar is very poor"> <span class="option-text">Claims degree but English/Grammar is very poor</span></label>
+                    <label class="option-label"><input type="radio" name="q16" value="5" data-text="Consistent (Educated = Good English; OR Honest about low education)"> <span class="option-text">Consistent (Educated = Good English; OR Honest about low education)</span></label>
+                    <label class="option-label"><input type="radio" name="q16" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q17">
+                <div class="q-text">17. Children Status</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q17" value="-5" data-text="Multiple children, different fathers (Stability risk)"> <span class="option-text">Multiple children, different fathers (Stability risk)</span></label>
+                    <label class="option-label"><input type="radio" name="q17" value="3" data-text="No children OR 1-2 kids with one father (Widow/Separated)"> <span class="option-text">No children OR 1-2 kids with one father (Widow/Separated)</span></label>
+                    <label class="option-label"><input type="radio" name="q17" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q18">
+                <div class="q-text">18. Control of Schedule</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q18" value="-5" data-text="She dictates times (Rigid schedule often implies shift work/husband)"> <span class="option-text">She dictates times (Rigid schedule often implies shift work/husband)</span></label>
+                    <label class="option-label"><input type="radio" name="q18" value="3" data-text="Flexible / Mutual agreement"> <span class="option-text">Flexible / Mutual agreement</span></label>
+                    <label class="option-label"><input type="radio" name="q18" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q19">
+                <div class="q-text">19. OFW History (Overseas Worker)</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q19" value="-2" data-text='Ex-OFW (Can be "street smart" / hardened, higher standards)'> <span class="option-text">Ex-OFW (Can be "street smart" / hardened, higher standards)</span></label>
+                    <label class="option-label"><input type="radio" name="q19" value="2" data-text="Never worked abroad (More traditional/innocent)"> <span class="option-text">Never worked abroad (More traditional/innocent)</span></label>
+                    <label class="option-label"><input type="radio" name="q19" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q20">
+                <div class="q-text">20. Foreigner Dating History</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q20" value="-5" data-text="Serial dater of foreigners"> <span class="option-text">Serial dater of foreigners</span></label>
+                    <label class="option-label"><input type="radio" name="q20" value="5" data-text="First time or limited experience"> <span class="option-text">First time or limited experience</span></label>
+                    <label class="option-label"><input type="radio" name="q20" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q21">
+                <div class="q-text">21. Current Location</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q21" value="-10" data-text="Outside Philippines (Dubai, HK, etc.) - Complexity Risk"> <span class="option-text">Outside Philippines (Dubai, HK, etc.) - Complexity Risk</span></label>
+                    <label class="option-label"><input type="radio" name="q21" value="2" data-text="Major City (Manila/Cebu)"> <span class="option-text">Major City (Manila/Cebu)</span></label>
+                    <label class="option-label"><input type="radio" name="q21" value="5" data-text="Province / Rural Area"> <span class="option-text">Province / Rural Area</span></label>
+                    <label class="option-label"><input type="radio" name="q21" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q22">
+                <div class="q-text">22. Sexual History (Self-reported)</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q22" value="-5" data-text='Extensive / "Open" values'> <span class="option-text">Extensive / "Open" values</span></label>
+                    <label class="option-label"><input type="radio" name="q22" value="5" data-text="Conservative / Limited"> <span class="option-text">Conservative / Limited</span></label>
+                    <label class="option-label"><input type="radio" name="q22" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q23">
+                <div class="q-text">23. Tattoos / Body Art</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q23" value="-10" data-text="Large / Aggressive / Gang-style tattoos"> <span class="option-text">Large / Aggressive / Gang-style tattoos</span></label>
+                    <label class="option-label"><input type="radio" name="q23" value="0" data-text="Small / Discrete / Artistic"> <span class="option-text">Small / Discrete / Artistic</span></label>
+                    <label class="option-label"><input type="radio" name="q23" value="5" data-text="No visible tattoos"> <span class="option-text">No visible tattoos</span></label>
+                    <label class="option-label"><input type="radio" name="q23" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q24">
+                <div class="q-text">24. Age Bracket</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q24" value="-10" data-text="18 - 22 (High generational gap risk)"> <span class="option-text">18 - 22 (High generational gap risk)</span></label>
+                    <label class="option-label"><input type="radio" name="q24" value="5" data-text="23 - 27"> <span class="option-text">23 - 27</span></label>
+                    <label class="option-label"><input type="radio" name="q24" value="10" data-text="28 - 40+"> <span class="option-text">28 - 40+</span></label>
+                    <label class="option-label"><input type="radio" name="q24" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q25">
+                <div class="q-text">25. Family Planning (Kids)</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q25" value="-5" data-text="Mismatch with your goals (e.g., she demands kids, you don't)"> <span class="option-text">Mismatch with your goals (e.g., she demands kids, you don't)</span></label>
+                    <label class="option-label"><input type="radio" name="q25" value="5" data-text="Aligned with your goals"> <span class="option-text">Aligned with your goals</span></label>
+                    <label class="option-label"><input type="radio" name="q25" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q26">
+                <div class="q-text">26. Social Media Transparency</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q26" value="-15" data-text='Claims "No FB" OR Blocked/Restricted you'> <span class="option-text">Claims "No FB" OR Blocked/Restricted you</span></label>
+                    <label class="option-label"><input type="radio" name="q26" value="10" data-text="Added you on main account (visible history, family tags)"> <span class="option-text">Added you on main account (visible history, family tags)</span></label>
+                    <label class="option-label"><input type="radio" name="q26" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q27">
+                <div class="q-text">27. Jealousy Patterns</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q27" value="-10" data-text="Extreme/Aggressive/Controlling"> <span class="option-text">Extreme/Aggressive/Controlling</span></label>
+                    <label class="option-label"><input type="radio" name="q27" value="5" data-text="Mild/Playful (Normal cultural trait) or Secure"> <span class="option-text">Mild/Playful (Normal cultural trait) or Secure</span></label>
+                    <label class="option-label"><input type="radio" name="q27" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q28">
+                <div class="q-text">28. Communication & "Tampo"</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q28" value="-10" data-text="Silent treatment used to manipulate or get money"> <span class="option-text">Silent treatment used to manipulate or get money</span></label>
+                    <label class="option-label"><input type="radio" name="q28" value="5" data-text='Communicates feelings / "Tampo" resolved with attention, not cash'> <span class="option-text">Communicates feelings / "Tampo" resolved with attention, not cash</span></label>
+                    <label class="option-label"><input type="radio" name="q28" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q29">
+                <div class="q-text">29. Family Relationships</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q29" value="-5" data-text='Estranged / "Black sheep" (Red flag in PH culture)'> <span class="option-text">Estranged / "Black sheep" (Red flag in PH culture)</span></label>
+                    <label class="option-label"><input type="radio" name="q29" value="5" data-text="Close-knit / Respectful of elders"> <span class="option-text">Close-knit / Respectful of elders</span></label>
+                    <label class="option-label"><input type="radio" name="q29" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q30">
+                <div class="q-text">30. Online Hours</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q30" value="-5" data-text="Online at odd hours (3 AM) consistently without work reason"> <span class="option-text">Online at odd hours (3 AM) consistently without work reason</span></label>
+                    <label class="option-label"><input type="radio" name="q30" value="5" data-text="Normal sleeping patterns"> <span class="option-text">Normal sleeping patterns</span></label>
+                    <label class="option-label"><input type="radio" name="q30" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q31">
+                <div class="q-text">31. Family Vices</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q31" value="-10" data-text="Father/Brothers are drunks/gamblers/unemployed"> <span class="option-text">Father/Brothers are drunks/gamblers/unemployed</span></label>
+                    <label class="option-label"><input type="radio" name="q31" value="5" data-text="Family members work / respectable reputation"> <span class="option-text">Family members work / respectable reputation</span></label>
+                    <label class="option-label"><input type="radio" name="q31" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q32">
+                <div class="q-text">32. Financial Expectations</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q32" value="-20" data-text="Expects house/land/allowance immediately"> <span class="option-text">Expects house/land/allowance immediately</span></label>
+                    <label class="option-label"><input type="radio" name="q32" value="5" data-text="Values relationship over material gain"> <span class="option-text">Values relationship over material gain</span></label>
+                    <label class="option-label"><input type="radio" name="q32" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q33">
+                <div class="q-text">33. Dress Code</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q33" value="-10" data-text="Provocative / Revealing online photos"> <span class="option-text">Provocative / Revealing online photos</span></label>
+                    <label class="option-label"><input type="radio" name="q33" value="5" data-text="Modest / Conservative"> <span class="option-text">Modest / Conservative</span></label>
+                    <label class="option-label"><input type="radio" name="q33" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q34">
+                <div class="q-text">34. Religion</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q34" value="-5" data-text="Inflexible / Fanatical OR Used to fake virtue"> <span class="option-text">Inflexible / Fanatical OR Used to fake virtue</span></label>
+                    <label class="option-label"><input type="radio" name="q34" value="3" data-text="Religious but respectful / Moderate"> <span class="option-text">Religious but respectful / Moderate</span></label>
+                    <label class="option-label"><input type="radio" name="q34" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q35">
+                <div class="q-text">35. Sibling Rank</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q35" value="3" data-text="Eldest (Breadwinner mentality / Responsible)"> <span class="option-text">Eldest (Breadwinner mentality / Responsible)</span></label>
+                    <label class="option-label"><input type="radio" name="q35" value="0" data-text="Middle / Youngest"> <span class="option-text">Middle / Youngest</span></label>
+                    <label class="option-label"><input type="radio" name="q35" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q36">
+                <div class="q-text">36. Employment</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q36" value="-5" data-text='Unemployed / "Sari-sari store" (often code for jobless)'> <span class="option-text">Unemployed / "Sari-sari store" (often code for jobless)</span></label>
+                    <label class="option-label"><input type="radio" name="q36" value="5" data-text="Has a steady job / Teacher / BPO / Nurse"> <span class="option-text">Has a steady job / Teacher / BPO / Nurse</span></label>
+                    <label class="option-label"><input type="radio" name="q36" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q37">
+                <div class="q-text">37. Humor Compatibility</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q37" value="-2" data-text="Does not get your jokes / Literal thinker"> <span class="option-text">Does not get your jokes / Literal thinker</span></label>
+                    <label class="option-label"><input type="radio" name="q37" value="3" data-text="Laughs together / Good banter"> <span class="option-text">Laughs together / Good banter</span></label>
+                    <label class="option-label"><input type="radio" name="q37" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q38">
+                <div class="q-text">38. Consistency Check</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q38" value="-15" data-text='Inconsistent stories / Ghosting / "Hot and Cold"'> <span class="option-text">Inconsistent stories / Ghosting / "Hot and Cold"</span></label>
+                    <label class="option-label"><input type="radio" name="q38" value="5" data-text="Very consistent / Reliable"> <span class="option-text">Very consistent / Reliable</span></label>
+                    <label class="option-label"><input type="radio" name="q38" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q39">
+                <div class="q-text">39. Vices</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q39" value="-20" data-text="Smoking / Drinking / Gambling / Drugs"> <span class="option-text">Smoking / Drinking / Gambling / Drugs</span></label>
+                    <label class="option-label"><input type="radio" name="q39" value="10" data-text="No bad habits"> <span class="option-text">No bad habits</span></label>
+                    <label class="option-label"><input type="radio" name="q39" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q40">
+                <div class="q-text">40. Dating Profile Presentation</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q40" value="-10" data-text='Heavy filters / "Looking for rich man" vibe'> <span class="option-text">Heavy filters / "Looking for rich man" vibe</span></label>
+                    <label class="option-label"><input type="radio" name="q40" value="5" data-text='Natural / "Simple" / Family-oriented'> <span class="option-text">Natural / "Simple" / Family-oriented</span></label>
+                    <label class="option-label"><input type="radio" name="q40" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <div class="question-card" id="q41">
+                <div class="q-text">41. CENOMAR (Certificate of No Marriage) Status</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q41" value="-20" data-text="Claims single but refuses to get CENOMAR"> <span class="option-text">Claims single but refuses to get CENOMAR</span></label>
+                    <label class="option-label"><input type="radio" name="q41" value="-15" data-text="Married (Annulment pending/Separated)"> <span class="option-text">Married (Annulment pending/Separated)</span></label>
+                    <label class="option-label"><input type="radio" name="q41" value="10" data-text="Produced valid CENOMAR (Confirmed Single)"> <span class="option-text">Produced valid CENOMAR (Confirmed Single)</span></label>
+                    <label class="option-label"><input type="radio" name="q41" value="0" data-text="Other/Not Applicable"> <span class="option-text">Other/Not Applicable</span></label>
+                </div>
+            </div>
+
+            <button type="button" class="calculate-btn" onclick="calculateScore()">Show My Risk Analysis</button>
+        </form>
+
+        <div id="results-area">
+            <div id="score-card" class="score-card">
+                <div class="score-label">RISK SCORE</div>
+                <div class="score-number" id="final-score">0</div>
+                <div id="risk-text">Calculating...</div>
+            </div>
+
+            <div id="recommendation-content"></div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; 2026 Fly Me To The Philippines. All Rights Reserved.</p>
+        <p><a href="https://flymetothephilippines.com">Home</a> | <a href="mailto:flymetothephilippines@gmail.com">Contact</a></p>
+    </div>
+</div>
+
+<script>
+    // Disclaimer functionality
+    const disclaimerOverlay = document.getElementById('disclaimer-overlay');
+    const acceptCheckbox = document.getElementById('accept-checkbox');
+    const acceptBtn = document.getElementById('accept-btn');
+
+    acceptCheckbox.addEventListener('change', function() {
+        acceptBtn.disabled = !this.checked;
+    });
+
+    acceptBtn.addEventListener('click', function() {
+        disclaimerOverlay.style.display = 'none';
+    });
+
+    // Service Modal functionality
+    const serviceModal = document.getElementById('service-modal');
+    const closeModal = document.getElementById('close-modal');
+
+    function showServiceInfo() {
+        serviceModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeModal.addEventListener('click', function() {
+        serviceModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    });
+
+    serviceModal.addEventListener('click', function(e) {
+        if (e.target === serviceModal) {
+            serviceModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    const totalQuestions = 41;
+    const form = document.getElementById('assessment-form');
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    
+    const questionTexts = {
+        'q1': '1. How was the initial contact made?',
+        'q2': '2. What is the video chat frequency?',
+        'q3': '3. Video Chat Environment Check: What do you see?',
+        'q4': '4. Identity Verification: Has she shared Government ID?',
+        'q5': '5. Location Verification (The Blue Dot Test)',
+        'q6': '6. Has she given a video tour of her home?',
+        'q7': '7. Profile Authenticity Check',
+        'q8': '8. Transportation Mode',
+        'q9': '9. Living Situation',
+        'q10': '10. Stance on Family Meeting',
+        'q11': '11. Platform Origin',
+        'q12': '12. Family Introduction on Video',
+        'q13': '13. Internet Access Consistency',
+        'q14': '14. The "Ask": Requests for Money',
+        'q15': '15. Did you send money?',
+        'q16': '16. Education vs. Communication Skill',
+        'q17': '17. Children Status',
+        'q18': '18. Control of Schedule',
+        'q19': '19. OFW History (Overseas Worker)',
+        'q20': '20. Foreigner Dating History',
+        'q21': '21. Current Location',
+        'q22': '22. Sexual History (Self-reported)',
+        'q23': '23. Tattoos / Body Art',
+        'q24': '24. Age Bracket',
+        'q25': '25. Family Planning (Kids)',
+        'q26': '26. Social Media Transparency',
+        'q27': '27. Jealousy Patterns',
+        'q28': '28. Communication & "Tampo"',
+        'q29': '29. Family Relationships',
+        'q30': '30. Online Hours',
+        'q31': '31. Family Vices',
+        'q32': '32. Financial Expectations',
+        'q33': '33. Dress Code',
+        'q34': '34. Religion',
+        'q35': '35. Sibling Rank',
+        'q36': '36. Employment',
+        'q37': '37. Humor Compatibility',
+        'q38': '38. Consistency Check',
+        'q39': '39. Vices',
+        'q40': '40. Dating Profile Presentation',
+        'q41': '41. CENOMAR (Certificate of No Marriage) Status'
+    };
+    
+    form.addEventListener('change', (e) => {
+        if(e.target.type === 'radio') {
+            const allOptions = document.querySelectorAll(`input[name="${e.target.name}"]`);
+            allOptions.forEach(opt => opt.parentElement.classList.remove('selected'));
+            e.target.parentElement.classList.add('selected');
+            
+            const card = e.target.closest('.question-card');
+            if(card) card.classList.remove('error');
+
+            updateProgress();
+        }
+    });
+
+    function updateProgress() {
+        const data = new FormData(form);
+        let answered = 0;
+        for(let pair of data.entries()) {
+            answered++;
+        }
+        
+        const pct = (answered / totalQuestions) * 100;
+        progressBar.style.width = `${pct}%`;
+        progressText.innerText = `${answered} of ${totalQuestions} Answered`;
+        
+        if(answered === totalQuestions) {
+            progressBar.style.backgroundColor = "#28a745";
+        }
+    }
+
+    function calculateScore() {
+        const data = new FormData(form);
+        let rawScore = 0;
+        let answeredCount = 0;
+        let missedQuestions = [];
+
+        for (let i = 1; i <= totalQuestions; i++) {
+            if (!data.has(`q${i}`)) {
+                missedQuestions.push(`q${i}`);
+                document.getElementById(`q${i}`).classList.add('error');
+            } else {
+                rawScore += parseInt(data.get(`q${i}`));
+                answeredCount++;
+            }
+        }
+
+        if (missedQuestions.length > 0) {
+            const firstError = document.getElementById(missedQuestions[0]);
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            alert(`Please answer all questions. You missed ${missedQuestions.length}.`);
+            return;
+        }
+
+        let finalScore = 0;
+        
+        if (rawScore > 0) {
+            finalScore = Math.min(100, Math.round((rawScore / 205) * 100));
+        } else {
+            finalScore = Math.max(-100, Math.round((rawScore / 350) * 100));
+        }
+
+        displayResults(finalScore, data);
+    }
+
+    function displayResults(score, formData) {
+        const resultsArea = document.getElementById('results-area');
+        const scoreCard = document.getElementById('score-card');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const riskText = document.getElementById('risk-text');
+        const recContent = document.getElementById('recommendation-content');
+
+        finalScoreDisplay.innerText = score > 0 ? `+${score}` : score;
+        
+        let riskLevel, riskClass, htmlContent, emailSubject;
+
+        if (score >= 80) {
+            riskLevel = "MINIMAL RISK (VERIFIED)";
+            riskClass = "safe";
+            emailSubject = "Validation of Low Risk Score (+"+score+")";
+            htmlContent = `
+                <div class="action-box">
+                    <h3>✅ Excellent Prospects</h3>
+                    <p>This score indicates a relationship built on transparency, verification, and alignment. You have likely verified identity (ID/CENOMAR), have no financial red flags, and communicate effectively.</p>
+                    <p><strong>Next Step:</strong> Even with a high score, hidden risks can exist. Before booking a flight, ensure your "due diligence" is complete with a final Social Media check.</p>
+                    ${generateActionButtons(score, emailSubject, "I got a high score (" + score + ") and want to confirm my next steps for visiting.", formData)}
+                </div>`;
+        } else if (score >= 40) {
+            riskLevel = "LOW RISK (PROCEED WITH CAUTION)";
+            riskClass = "safe";
+            emailSubject = "Question about Low Risk Score (+"+score+")";
+            htmlContent = `
+                <div class="action-box">
+                    <h3>⚠️ Good, But Verify</h3>
+                    <p>Your partner shows promise, but there are gaps in verification (perhaps missing ID, CENOMAR, or video tour). These "yellow flags" must be cleared before financial commitment.</p>
+                    <p><strong>Recommendation:</strong> Do not send money yet. Focus on clearing the specific missing verification items from the checklist.</p>
+                    ${generateActionButtons(score, emailSubject, "I scored " + score + ". Generally good, but I have some questions about specific red flags.", formData)}
+                </div>`;
+        } else if (score >= 0) {
+            riskLevel = "MODERATE RISK (UNCERTAIN)";
+            riskClass = "caution";
+            emailSubject = "Moderate Risk Score Analysis (+"+score+")";
+            htmlContent = `
+                <div class="action-box">
+                    <h3>🛑 Stop and Evaluate</h3>
+                    <p>A score near zero means positive traits are being cancelled out by significant red flags (likely financial requests or lack of transparency). You are in the "Danger Zone" of emotional investment without proof.</p>
+                    <p><strong>Critical Action:</strong> Stop all financial transfers. Require a video call tour and ID verification immediately.</p>
+                    ${generateActionButtons(score, emailSubject, "I scored " + score + ". I am confused about some mixed signals and need advice.", formData)}
+                </div>`;
+        } else if (score >= -40) {
+            riskLevel = "HIGH RISK (LIKELY SCAM)";
+            riskClass = "danger";
+            emailSubject = "URGENT: High Risk Score ("+score+")";
+            htmlContent = `
+                <div class="action-box">
+                    <h3>🚨 High Probability of Deception</h3>
+                    <p>This profile matches patterns of organized love scams. Key indicators likely include: asking for money early, refusing video calls, or inconsistent stories.</p>
+                    <p><strong>Immediate Advice:</strong> Do not engage further without professional verification. You are likely being scripted.</p>
+                    ${generateActionButtons(score, emailSubject, "I scored " + score + " and need help immediately. I suspect I am being scammed.", formData)}
+                </div>`;
+        } else {
+            riskLevel = "CRITICAL RISK (CONFIRMED PATTERN)";
+            riskClass = "critical";
+            emailSubject = "EMERGENCY: Critical Scam Score ("+score+")";
+            htmlContent = `
+                <div class="action-box">
+                    <h3>☠️ Catastrophic Risk</h3>
+                    <p>Scores this low are almost exclusively generated by syndicate operations or verified scammers. You have likely already lost money or are being targeted for "pig butchering" / blackmail.</p>
+                    <p><strong>EMERGENCY PROTOCOL:</strong> Cease all contact. Secure your bank accounts. Do not tell her you know. Contact us immediately for damage control.</p>
+                    ${generateActionButtons(score, emailSubject, "I scored " + score + ". I have likely lost money and need emergency assistance.", formData)}
+                </div>`;
+        }
+
+        scoreCard.className = `score-card ${riskClass}`;
+        riskText.innerText = riskLevel;
+        recContent.innerHTML = htmlContent;
+        
+        resultsArea.style.display = 'block';
+        resultsArea.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function generateFullResults(score, formData) {
+        let fullReport = `RELATIONSHIP RISK ASSESSMENT RESULTS\n`;
+        fullReport += `=====================================\n\n`;
+        fullReport += `FINAL SCORE: ${score > 0 ? '+' + score : score}\n\n`;
+        fullReport += `DETAILED RESPONSES:\n`;
+        fullReport += `===================\n\n`;
+
+        for (let i = 1; i <= totalQuestions; i++) {
+            const qName = `q${i}`;
+            if (formData.has(qName)) {
+                const selectedInput = document.querySelector(`input[name="${qName}"]:checked`);
+                const answerText = selectedInput.getAttribute('data-text');
+                fullReport += `${questionTexts[qName]}\n`;
+                fullReport += `Answer: ${answerText}\n`;
+                fullReport += `Points: ${selectedInput.value}\n\n`;
+            }
+        }
+
+        return fullReport;
+    }
+
+    function generateActionButtons(score, subject, body, formData) {
+        const fullResults = generateFullResults(score, formData);
+        const emailBody = `${body}\n\n${fullResults}`;
+        
+        return `
+            <div style="margin-top:20px;">
+                <p><strong>Send Results to Rob & Chrissy:</strong></p>
+                <div class="copy-field" id="email-body">To: flymetothephilippines@gmail.com
+Subject: ${subject}
+
+${emailBody}</div>
+                <div class="btn-group">
+                    <button class="action-btn btn-copy" onclick="copyToClipboard(\`${emailBody.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`)">📋 Copy Results</button>
+                    <a href="mailto:flymetothephilippines@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}" class="action-btn btn-consult">📧 Email Results</a>
+                    <button class="action-btn btn-whatsapp" onclick="showServiceInfo()">📱 Learn About Investigation Service</button>
+                </div>
+                <div style="margin-top:10px;">
+                    <a href="https://flymetothephilippinesconsultation.as.me/" target="_blank" class="calculate-btn" style="text-align:center; text-decoration:none; font-size:1em; margin-top:10px;">📅 Book Professional Consultation ($50-$200)</a>
+                </div>
+            </div>
+        `;
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Complete results copied to clipboard! You can paste this into your email.");
+        });
+    }
+</script>
+</body>
+</html>
