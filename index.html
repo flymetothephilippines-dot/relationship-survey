@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Relationship Risk Assessment v2.0 - Fly Me To The Philippines</title>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -49,6 +49,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow-y: auto;
         }
 
         #disclaimer-box {
@@ -57,6 +58,7 @@
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin: auto;
         }
 
         #disclaimer-box h2 {
@@ -486,12 +488,41 @@
 
         /* Responsive */
         @media (max-width: 600px) {
-           .container { margin: 0; border-radius: 0; }
+           .container { 
+               margin: 0; 
+               border-radius: 0; 
+               min-height: 100vh;
+           }
            .header h2 { font-size: 1.8em; }
            .score-number { font-size: 3em; }
            .btn-group { flex-direction: column; }
-           #disclaimer-box { padding: 25px; }
-           #service-content { padding: 25px; }
+           #disclaimer-box { 
+               padding: 25px; 
+               margin: 20px;
+               max-height: 90vh;
+               overflow-y: auto;
+           }
+           #disclaimer-overlay {
+               align-items: flex-start;
+               padding: 10px;
+           }
+           #service-content { 
+               padding: 25px; 
+               margin: 20px auto;
+           }
+           #service-modal {
+               padding: 10px;
+           }
+           .content {
+               padding: 20px 15px;
+           }
+           .progress-sticky {
+               padding: 10px 15px;
+               margin: 0 -15px 20px -15px;
+           }
+           body {
+               padding-bottom: 40px;
+           }
         }
     </style>
 </head>
@@ -1457,3 +1488,5 @@ ${emailBody}</div>
 </script>
 </body>
 </html>
+
+
